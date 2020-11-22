@@ -1,2 +1,3 @@
-# advent_of_code
-:santa: From chocolates to code
+# Advent of Code
+
+My personal solutions to Advent of Code.
