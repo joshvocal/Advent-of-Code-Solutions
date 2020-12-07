@@ -3,13 +3,23 @@ package day6
 import java.io.File
 
 fun main() {
-    val input = File("src/day6/sample_input.txt").readLines()
+    val input = File("src/day6/input.txt").readLines()
+        .joinToString("\n")
+        .split("\n\n")
+
+    println(solvePart1(input))
+    println(solvePart2(input))
 }
 
-private fun solvePart1(input: List<String>): Int {
-    return 0
+private fun solvePart1(input: List<String>): Long {
+    val groups: List<String> = input.map {
+        it.split("\n").joinToString("")
+    }
+
+    return groups.map { it.chars().distinct().count() }
+        .reduce { total, count -> total + count }
 }
 
-private fun solvePart2(passports: List<String>): Int {
+private fun solvePart2(input: List<String>): Int {
     return 0
 }
