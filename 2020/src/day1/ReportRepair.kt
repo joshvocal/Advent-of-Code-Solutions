@@ -16,7 +16,7 @@ fun main() {
 /**
  * Two Sum
  */
-fun solvePart1(expenseReport: List<Int>, target: Int): Pair<Int, Int> {
+private fun solvePart1(expenseReport: List<Int>, target: Int): Pair<Int, Int> {
     val s = mutableSetOf<Int>()
 
     expenseReport.forEach {
@@ -35,7 +35,7 @@ fun solvePart1(expenseReport: List<Int>, target: Int): Pair<Int, Int> {
 /**
  * Three Sum
  */
-fun solvePart2(expenseReport: List<Int>, target: Int): Triple<Int, Int, Int> {
+private fun solvePart2(expenseReport: List<Int>, target: Int): Triple<Int, Int, Int> {
     val sorted = expenseReport.sorted()
     val n = expenseReport.size
 

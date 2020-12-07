@@ -9,7 +9,7 @@ fun main() {
     println(solvePart2(lines))
 }
 
-fun solvePart1(lines: List<String>): Int {
+private fun solvePart1(lines: List<String>): Int {
     var numValidPasswords = 0
 
     lines.forEach { line ->
@@ -28,7 +28,7 @@ fun solvePart1(lines: List<String>): Int {
     return numValidPasswords
 }
 
-fun solvePart2(lines: List<String>): Int {
+private fun solvePart2(lines: List<String>): Int {
     var numValidPasswords = 0
 
     lines.forEach { line ->
