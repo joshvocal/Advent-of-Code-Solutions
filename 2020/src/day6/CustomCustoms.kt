@@ -3,7 +3,7 @@ package day6
 import java.io.File
 
 fun main() {
-    val input = File("src/day6/input.txt").readLines()
+    val input: List<String> = File("src/day6/input.txt").readLines()
         .joinToString("\n")
         .split("\n\n")
 
@@ -21,5 +21,13 @@ private fun solvePart1(input: List<String>): Long {
 }
 
 private fun solvePart2(input: List<String>): Int {
-    return 0
+    val groups: List<List<String>> = input.map {
+        it.split("\n")
+    }
+
+    return groups.map {
+        it.map { person -> person.toSet() }
+            .reduce { acc, person -> acc intersect person }
+            .size
+    }.reduce { acc, count -> acc + count }
 }
