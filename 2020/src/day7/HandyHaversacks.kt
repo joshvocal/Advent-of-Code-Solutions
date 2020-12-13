@@ -3,11 +3,13 @@ package day7
 import java.io.File
 
 fun main() {
-    val input = File("src/day7/sample_input.txt").readLines()
+    val input = File("src/day7/input.txt").readLines()
 
     println(solvePart1(input))
-//    println(solvePart2(input))
+    println(solvePart2(input))
 }
+
+data class Bag(val color: String, val quantity: Int)
 
 private fun solvePart1(input: List<String>): Int {
 
@@ -63,9 +65,7 @@ private fun solvePart2(input: List<String>): Int {
 
     fun String.splitAtIndex(index: Int) = take(index) to substring(index)
 
-    val map = hashMapOf<String, ArrayList<Pair<String, String>>>()
-    val list = arrayListOf<Pair<String, String>>()
-    val tempList: MutableList<Pair<String, String>>
+    val map = hashMapOf<String, ArrayList<Pair<Int, String>>>()
 
     for (line in input) {
         val key = line.substringBefore("contain").trim()
@@ -78,7 +78,8 @@ private fun solvePart2(input: List<String>): Int {
             .split(", ")
             .map {
                 val (first, second) = it.splitAtIndex(it.indexOf(' '))
-                Pair(first.trim(), second.trim())
+
+                Pair(first.toIntOrNull() ?: 0, second.trim())
             }
 
         if (!map.containsKey(newKey)) {
@@ -88,25 +89,18 @@ private fun solvePart2(input: List<String>): Int {
         map[newKey]?.addAll(newValue)
     }
 
-    map["shiny gold"]?.let { list.addAll(it) }
+    return dfs("shiny gold", map) - 1
+}
 
-    tempList = list.toMutableList()
+private fun dfs(target: String, map: Map<String, ArrayList<Pair<Int, String>>>): Int {
+    val bags = map[target]
+    var count = 1
 
-    // BFS
-    while (tempList.isNotEmpty()) {
-        for (i in 0 until tempList.size) {
-            val curr = tempList.removeFirst()
-
-            map.forEach { (key, value) ->
-                val (num, color) = curr
-                println("$num $color")
-//                if (curr in value && key !in list) {
-//                    tempList.add(key)
-//                    list.add(key)
-//                }
-            }
+    if (bags != null) {
+        for (bag in bags) {
+            count += bag.first * dfs(bag.second, map)
         }
     }
 
-    return list.size
+    return count
 }
