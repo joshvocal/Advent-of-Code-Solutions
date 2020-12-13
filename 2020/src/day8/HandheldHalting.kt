@@ -4,44 +4,69 @@ import java.io.File
 
 fun main() {
     val input = File("src/day8/input.txt").readLines()
-    val instructions: List<Instruction> = input.map { line -> Instruction.of(line) }
+    val instructions: ArrayList<Instruction> = input.map { line -> Instruction.parse(line) } as ArrayList<Instruction>
 
-    println(solvePart1(instructions))
+    println(solvePart1(instructions).second)
+    println(solvePart2(instructions))
 }
 
+private data class Instruction(val op: OPCODE, val arg: Int) {
+    enum class OPCODE {
+        JMP,
+        NOP,
+        ACC
+    }
 
-private data class Instruction(val op: String, val arg: Int, var isExecuted: Boolean = false) {
     companion object {
         private val pattern = "([a-z]{3}) ([+-][0-9]+)".toRegex()
 
-        fun of(line: String): Instruction {
+        fun parse(line: String): Instruction {
             val (op, arg) = pattern.matchEntire(line)!!.destructured
-            return Instruction(op, arg.toInt())
+            return Instruction(OPCODE.valueOf(op.toUpperCase()), arg.toInt())
         }
     }
 }
 
-private fun solvePart1(instructions: List<Instruction>): Int {
+private fun solvePart1(instructions: List<Instruction>): Pair<Int, Int> {
     var acc = 0
-    var lineNum = 0
+    var offset = 0
+    val freqTable = IntArray(instructions.size)
 
-    while (!instructions[lineNum].isExecuted) {
-        val (op, arg) = instructions[lineNum]
-        instructions[lineNum].isExecuted = true
+    while (offset < instructions.size && freqTable[offset] == 0) {
+        val (op, arg) = instructions[offset]
+        freqTable[offset] += 1
 
         when (op) {
-            "nop" -> lineNum += 1
-            "acc" -> {
-                lineNum += 1
+            Instruction.OPCODE.NOP -> offset += 1
+            Instruction.OPCODE.ACC -> {
+                offset += 1
                 acc += arg
             }
-            "jmp" -> lineNum += arg
+            Instruction.OPCODE.JMP -> offset += arg
         }
     }
 
-    return acc
+    return Pair(offset, acc)
 }
 
-private fun solvePart2(instructions: List<Instruction>): Int {
-    return 0
+private fun solvePart2(instructions: ArrayList<Instruction>): Int {
+    for ((index, instruction) in instructions.withIndex()) {
+        val instructionCopy = instruction.copy()
+
+        when (instructionCopy.op) {
+            Instruction.OPCODE.NOP -> instructions[index] = Instruction(Instruction.OPCODE.JMP, instruction.arg)
+            Instruction.OPCODE.JMP -> instructions[index] = Instruction(Instruction.OPCODE.NOP, instruction.arg)
+            Instruction.OPCODE.ACC -> continue
+        }
+
+        val (offset, acc) = solvePart1(instructions)
+
+        if (offset == instructions.size) {
+            return acc
+        }
+
+        instructions[index] = instructionCopy
+    }
+
+    return -1
 }
