@@ -1,104 +1,79 @@
 package day7
 
+import Utils.Companion.splitAtIndex
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
 
 fun main() {
     val input = File("src/day7/input.txt").readLines()
+    val rules = parseRules(input)
 
-    println(solvePart1(input))
-    println(solvePart2(input))
+    println(solvePart1(rules = rules, target = "shiny gold"))
+    println(solvePart2(rules = rules, target = "shiny gold") - 1)
 }
 
-data class Bag(val color: String, val quantity: Int)
+private data class Bag(val quantity: Int, val color: String)
 
-private fun solvePart1(input: List<String>): Int {
-
-    val map = hashMapOf<String, ArrayList<String>>()
-    val list = mutableSetOf<String>()
-    val tempList: MutableList<String>
+private fun parseRules(input: List<String>): Map<String, ArrayList<Bag>> {
+    val rules = hashMapOf<String, ArrayList<Bag>>()
 
     for (line in input) {
-
         val key = line.substringBefore("contain").trim()
         val value = line.substringAfter("contain").trim()
 
-        val newKey = key.replace("bag[s]?".toRegex(), "")
+        val bagColor = key.replace("bag[s]?".toRegex(), "")
             .trim()
-        val newValue = value.replace(" bag[s]?[^,]?".toRegex(), "")
-            .replace(" ?[0-9] ".toRegex(), "")
+        val bagContains = value.replace(" bag[s]?[^,]?".toRegex(), "")
             .trim()
-            .split(",")
+            .split(", ")
+            .map {
+                val (quantity, color) = it.splitAtIndex(it.indexOf(' '))
 
-        if (!map.containsKey(newKey)) {
-            map[newKey] = arrayListOf()
+                Bag(quantity.toIntOrNull() ?: 0, color.trim())
+            }
+
+        if (!rules.containsKey(bagColor)) {
+            rules[bagColor] = arrayListOf()
         }
 
-        map[newKey]?.addAll(newValue)
+        rules[bagColor]?.addAll(bagContains)
     }
 
-    map.forEach { (key, value) ->
-        if (value.contains("shiny gold")) {
-            list.add(key)
-        }
-    }
+    return rules
+}
 
-    tempList = list.toMutableList()
+private fun solvePart1(rules: Map<String, ArrayList<Bag>>, target: String): Int {
+    val seen = mutableSetOf<String>()
+    val queue: Queue<String> = LinkedList()
+
+    queue.add(target)
 
     // BFS
-    while (tempList.isNotEmpty()) {
-        for (i in 0 until tempList.size) {
-            val curr = tempList.removeFirst()
+    while (queue.isNotEmpty()) {
+        for (i in 0 until queue.size) {
+            val currentBagColor = queue.remove()
 
-            map.forEach { (key, value) ->
-                if (curr in value && key !in list) {
-                    tempList.add(key)
-                    list.add(key)
+            rules.forEach { (bagColor: String, bagContains: List<Bag>) ->
+                if (bagColor !in seen && bagContains.any { bag -> bag.color == currentBagColor }) {
+                    queue.add(bagColor)
+                    seen.add(bagColor)
                 }
             }
         }
     }
 
-    return list.size
+    return seen.size
 }
 
-private fun solvePart2(input: List<String>): Int {
-
-    fun String.splitAtIndex(index: Int) = take(index) to substring(index)
-
-    val map = hashMapOf<String, ArrayList<Pair<Int, String>>>()
-
-    for (line in input) {
-        val key = line.substringBefore("contain").trim()
-        val value = line.substringAfter("contain").trim()
-
-        val newKey = key.replace("bag[s]?".toRegex(), "")
-            .trim()
-        val newValue = value.replace(" bag[s]?[^,]?".toRegex(), "")
-            .trim()
-            .split(", ")
-            .map {
-                val (first, second) = it.splitAtIndex(it.indexOf(' '))
-
-                Pair(first.toIntOrNull() ?: 0, second.trim())
-            }
-
-        if (!map.containsKey(newKey)) {
-            map[newKey] = arrayListOf()
-        }
-
-        map[newKey]?.addAll(newValue)
-    }
-
-    return dfs("shiny gold", map) - 1
-}
-
-private fun dfs(target: String, map: Map<String, ArrayList<Pair<Int, String>>>): Int {
-    val bags = map[target]
+// DFS
+private fun solvePart2(rules: Map<String, ArrayList<Bag>>, target: String): Int {
+    val bags = rules[target]
     var count = 1
 
     if (bags != null) {
         for (bag in bags) {
-            count += bag.first * dfs(bag.second, map)
+            count += bag.quantity * solvePart2(rules, bag.color)
         }
     }
 

@@ -1,22 +1,25 @@
 package day4
 
+import Utils.Companion.splitAtIndex
 import java.io.File
 
 fun main() {
     val input = File("src/day4/input.txt").readLines()
         .joinToString("\n")
         .split("\n\n")
-
-    val passports = input.map { passport ->
-        passport.split(" ", "\n")
-            .map { it.split(":").let { (key, value) -> Field(key, value) } }
-            .let { Passport(it) }
-    }
+    val passports = parsePassports(input)
 
     println(solvePart1(passports))
     println(solvePart2(passports))
 }
 
+private fun parsePassports(input: List<String>): List<Passport> {
+    return input.map { passport ->
+        passport.split(" ", "\n")
+            .map { it.split(":").let { (key, value) -> Field(key, value) } }
+            .let { Passport(it) }
+    }
+}
 
 private data class Passport(private val fields: List<Field>) {
     val hasAllRequiredFields = fields.count { it.isRequired() } == 7
@@ -24,8 +27,6 @@ private data class Passport(private val fields: List<Field>) {
 }
 
 private data class Field(private val key: String, private val value: String) {
-    fun String.splitAtIndex(index: Int) = take(index) to substring(index)
-
     fun isRequired() = key != "cid"
 
     fun isValid() = when (key) {
