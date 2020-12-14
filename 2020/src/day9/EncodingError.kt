@@ -5,9 +5,11 @@ import java.util.*
 
 fun main() {
     val input = File("src/day9/input.txt").readLines()
-    val numbers = input.map { it.toLong() }
+    val numbers: ArrayList<Long> = input.map { it.toLong() } as ArrayList<Long>
 
-    println(solvePart1(numbers, 25))
+    val weakness = solvePart1(numbers, 25)
+    println(weakness)
+    println(solvePart2(numbers, weakness))
 }
 
 private fun search(arr: List<Long>, target: Long): Boolean {
@@ -27,6 +29,9 @@ private fun search(arr: List<Long>, target: Long): Boolean {
     return false
 }
 
+/**
+ * Queue
+ */
 private fun solvePart1(numbers: List<Long>, preamble: Int): Long {
     val queue: Queue<Long> = LinkedList()
 
@@ -46,6 +51,28 @@ private fun solvePart1(numbers: List<Long>, preamble: Int): Long {
     return -1
 }
 
-private fun solvePart2(passports: List<String>): Int {
-    return 0
+/**
+ * Sliding Window
+ */
+private fun solvePart2(numbers: ArrayList<Long>, target: Long): Long? {
+    var currentSum = 0L
+    var start = 0
+
+    for (end in 0 until numbers.size) {
+        currentSum += numbers[end]
+
+        while (currentSum >= target) {
+            if (currentSum == target) {
+                val range = start..end
+                val min = numbers.slice(range).minOrNull()!!
+                val max = numbers.slice(range).maxOrNull()!!
+                return min + max
+            }
+
+            currentSum -= numbers[start]
+            start += 1
+        }
+    }
+
+    return null
 }
