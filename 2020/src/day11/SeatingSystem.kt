@@ -3,81 +3,49 @@ package day11
 import java.io.File
 
 fun main() {
-    val input = File("src/day11/sample_input.txt").readLines()
+    val input = File("src/day11/input.txt").readLines()
 
-    val grid: ArrayList<ArrayList<Char>> = ArrayList()
-    val gridCopy: ArrayList<ArrayList<Char>> = ArrayList()
-
-    input.forEach { grid.add(it.toList() as ArrayList<Char>) }
-    input.forEach { gridCopy.add(it.toList() as ArrayList<Char>) }
-
-//    solvePart1(grid, gridCopy)
+    println(solvePart1(input).joinToString("").count { it == OCCUPIED })
 }
 
 const val EMPTY = 'L'
-const val FLOOR = '.'
 const val OCCUPIED = '#'
 
-private fun solvePart1(
-    grid: ArrayList<ArrayList<Char>>,
-    gridCopy: ArrayList<ArrayList<Char>>
-): ArrayList<ArrayList<Char>> {
+fun solvePart1(chairs: List<String>): List<String> {
+    val newSeats = newSeats(chairs)
 
+    if (newSeats == chairs) {
+        return newSeats
+    }
 
-    for (y in grid.indices) {
-        for (x in grid[0].indices) {
-            when (grid[y][x]) {
-                FLOOR -> continue
-                EMPTY,
-                OCCUPIED -> checkSeat(y, x, grid, gridCopy, 0)
+    return solvePart1(newSeats)
+}
+
+fun newSeats(floor: List<String>): List<String> {
+    return floor.mapIndexed { y, row ->
+        row.mapIndexed { x, seat ->
+            val neighbours = getNeighbours(x, y, floor)
+            when {
+                seat == EMPTY && neighbours.count { it == OCCUPIED } == 0 -> OCCUPIED
+                seat == OCCUPIED && neighbours.count { it == OCCUPIED } >= 4 -> EMPTY
+                else -> seat
             }
-        }
+        }.joinToString("")
     }
-
-
-    println()
-    println()
-    grid.forEach { println(it.joinToString("")) }
-    println()
-    gridCopy.forEach { println(it.joinToString("")) }
-
-    return gridCopy
 }
 
-private fun checkSeat(
-    y: Int,
-    x: Int,
-    grid: ArrayList<ArrayList<Char>>,
-    gridCopy: ArrayList<ArrayList<Char>>,
-    steps: Int
-): Char {
-    if (y >= grid.size || y < 0 || x >= grid[0].size || x < 0 || grid[y][x] == FLOOR || steps > 1) {
-        return '.'
-    }
 
-    val topLeft = checkSeat(y - 1, x - 1, grid, gridCopy, steps + 1)
-    val top = checkSeat(y - 1, x, grid, gridCopy, steps + 1)
-    val topRight = checkSeat(y - 1, x + 1, grid, gridCopy, steps + 1)
-    val left = checkSeat(y, x - 1, grid, gridCopy, steps + 1)
-    val right = checkSeat(y, x + 1, grid, gridCopy, steps + 1)
-    val bottomLeft = checkSeat(y + 1, x - 1, grid, gridCopy, steps + 1)
-    val bottom = checkSeat(y + 1, x, grid, gridCopy, steps + 1)
-    val bottomRight = checkSeat(y + 1, x + 1, grid, gridCopy, steps + 1)
-
-    val seats = arrayListOf(topLeft, top, topRight, left, right, bottomLeft, bottom, bottomRight)
-    println("$seats $x $y")
-    val noOccupiedSeatsAround = seats.all { it == EMPTY || it == FLOOR }
-    val fourOrMoreAdjacent = seats.count { it == OCCUPIED } >= 4
-
-    if (grid[y][x] == EMPTY && noOccupiedSeatsAround) {
-        gridCopy[y][x] = OCCUPIED
-    } else if (grid[y][x] == OCCUPIED && fourOrMoreAdjacent) {
-        gridCopy[y][x] = EMPTY
-    }
-
-    return grid[y][x]
-}
-
+private fun getNeighbours(x: Int, y: Int, chairs: List<String>): List<Char?> =
+    listOf(
+        Pair(-1, -1), // Top-left
+        Pair(0, -1), // Top
+        Pair(1, -1), // Top-right
+        Pair(-1, 0), // Left
+        Pair(1, 0), // Right
+        Pair(-1, 1), // Bottom-left
+        Pair(0, 1), // Bottom
+        Pair(1, 1), // Bottom-right
+    ).map { chairs.getOrNull(y + it.second)?.getOrNull(x + it.first) }
 
 private fun solvePart2(passports: List<String>): Int {
     return 0
