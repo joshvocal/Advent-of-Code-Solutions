@@ -15,6 +15,7 @@ fun main() {
     }
 
     println(solvePart1(instructions))
+    println(solvePart2(instructions))
 }
 
 private fun solvePart1(instructions: List<Instruction>): Int {
@@ -55,6 +56,37 @@ private fun solvePart1(instructions: List<Instruction>): Int {
     return abs(x) + abs(y)
 }
 
-private fun solvePart2(passports: List<String>): Int {
-    return 0
+private fun solvePart2(instructions: List<Instruction>): Int {
+    var x = 0
+    var y = 0
+    var waypointX = 10
+    var waypointY = 1
+
+    instructions.forEach { instruction ->
+        val (action, value) = instruction
+        val numRotations = (value % 360) / 90
+
+        when (action) {
+            "N" -> waypointY += value
+            "S" -> waypointY -= value
+            "E" -> waypointX += value
+            "W" -> waypointX -= value
+            "L" -> {
+                repeat(numRotations) {
+                    waypointX = -waypointY.also { waypointY = waypointX }
+                }
+            }
+            "R" -> {
+                repeat(numRotations) {
+                    waypointX = waypointY.also { waypointY = -waypointX }
+                }
+            }
+            "F" -> {
+                y += value * waypointY
+                x += value * waypointX
+            }
+        }
+    }
+
+    return abs(x) + abs(y)
 }
