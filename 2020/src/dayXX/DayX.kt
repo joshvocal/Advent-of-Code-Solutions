@@ -1,9 +1,9 @@
-package day0
+package dayXX
 
 import java.io.File
 
 fun main() {
-    val input = File("src/day6/sample_input.txt").readLines()
+    val input = File("src/dayX/sample_input.txt").readLines()
 }
 
 private fun solvePart1(input: List<String>): Int {

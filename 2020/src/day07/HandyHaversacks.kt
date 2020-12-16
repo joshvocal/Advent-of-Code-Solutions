@@ -1,4 +1,4 @@
-package day7
+package day07
 
 import Utils.Companion.splitAtIndex
 import java.io.File
