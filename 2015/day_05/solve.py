@@ -1,4 +1,3 @@
-
 def part1(lines):
     def filter_vowels(letters):
         vowels = ['a', 'e', 'i', 'o', 'u']
@@ -40,9 +39,35 @@ def part1(lines):
     return nice_string_count
 
 def part2(lines):
-    return
+    def repeat_pair(letters):
+        for i in range(len(letters) - 1):
+            if letters.count(letters[i:i+2]) > 1: 
+                return True
+
+        return False
+
+    def repeat_exactly_one_letter_between(letters):
+        letters_len = len(letters) - 2
+
+        for i in range(letters_len):
+            if letters[i] == letters[i + 2]:
+                return True
+
+        return False        
+
+    count = 0
+
+    for line in lines:
+        repeat_exactly_one_letter_between_cond = repeat_exactly_one_letter_between(line)
+        repeat_pair_cond = repeat_pair(line)
+
+        if (repeat_exactly_one_letter_between_cond and repeat_pair_cond):
+            count += 1
+
+    return count
 
 with open('input.txt', 'r') as f:
     lines = f.read().splitlines()
 
     print(part1(lines))
+    print(part2(lines))

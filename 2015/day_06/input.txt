@@ -29,7 +29,7 @@ turn off 169,791 through 758,942
 turn on 955,440 through 980,477
 toggle 944,498 through 995,928
 turn on 519,391 through 605,718
-toggle 521,303 through 617,36
+toggle 521,303 through 617,366
 turn off 524,349 through 694,791
 toggle 391,87 through 499,792
 toggle 562,527 through 668,935
