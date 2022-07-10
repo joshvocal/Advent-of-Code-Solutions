@@ -8,7 +8,16 @@ class Solution:
         SOUTH = (0, -1)
         WEST = (-1, 0)
 
-    COORDINATES = [Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST]
+    DIRECTIONS = [Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST]
+
+    def manhattan_sum(self, a, b):
+        return tuple(map(sum, zip(a, b)))
+
+    def manhattan_blocks_away(self, coordinate):
+        return sum(map(abs, coordinate))
+
+    def scale_coordaintes(self, direction, scaler):
+        return tuple(map(lambda axis: axis * scaler, direction))
 
     def part1(self, instructions):
         direction = 0
@@ -18,14 +27,14 @@ class Solution:
             turn, steps = instruction
 
             if turn == 'R':
-                direction = (direction + 1) % len(self.COORDINATES)
+                direction = (direction + 1) % len(self.DIRECTIONS)
             elif turn == 'L':
-                direction = (direction - 1) % len(self.COORDINATES)
+                direction = (direction - 1) % len(self.DIRECTIONS)
 
-            new_coordinates = tuple([axis * steps for axis in self.COORDINATES[direction].value])
-            current_coordinates = tuple(map(sum, zip(new_coordinates, current_coordinates)))
+            coordinates_walked = self.scale_coordaintes(self.DIRECTIONS[direction].value, steps)
+            current_coordinates = self.manhattan_sum(coordinates_walked, current_coordinates)
 
-        return sum(map(abs, current_coordinates))
+        return self.manhattan_blocks_away(current_coordinates)
 
     def part2(self, instructions):
         direction = 0
@@ -36,17 +45,17 @@ class Solution:
             turn, steps = instruction
 
             if turn == 'R':
-                direction = (direction + 1) % len(self.COORDINATES)
+                direction = (direction + 1) % len(self.DIRECTIONS)
             elif turn == 'L':
-                direction = (direction - 1) % len(self.COORDINATES)
+                direction = (direction - 1) % len(self.DIRECTIONS)
 
             for _ in range(steps):
-                position = tuple(map(sum, zip(position, self.COORDINATES[direction].value)))
+                position = self.manhattan_sum(position, self.DIRECTIONS[direction].value)
                 if position in visited:
-                    return sum(map(abs, position))
+                    return self.manhattan_blocks_away(position)
                 visited.add(position)
 
-        return sum(map(abs, position))
+        return self.manhattan_blocks_away(position)
 
 def main(textfile):
     with open(textfile, 'r') as f:
