@@ -27,8 +27,26 @@ class Solution:
 
         return sum(map(abs, current_coordinates))
 
-    def part2(self, lines):
-        return
+    def part2(self, instructions):
+        direction = 0
+        position = (0, 0)
+        visited = set(position)
+
+        for instruction in instructions:
+            turn, steps = instruction
+
+            if turn == 'R':
+                direction = (direction + 1) % len(self.COORDINATES)
+            elif turn == 'L':
+                direction = (direction - 1) % len(self.COORDINATES)
+
+            for _ in range(steps):
+                position = tuple(map(sum, zip(position, self.COORDINATES[direction].value)))
+                if position in visited:
+                    return sum(map(abs, position))
+                visited.add(position)
+
+        return sum(map(abs, position))
 
 def main(textfile):
     with open(textfile, 'r') as f:
