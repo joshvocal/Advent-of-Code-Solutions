@@ -1,6 +1,8 @@
 from enum import Enum
 import sys
 
+# Topics: Manhattan distance, Sets, Cartiesan coordiantes
+
 class Solution:
     class Direction(Enum):
         NORTH = (0, 1)
