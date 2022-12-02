@@ -1,42 +1,11 @@
 import sys
-import heapq
 
 class Game:
     def __init__(self, opponent_move, your_move):
         self.opponent_move = opponent_move
         self.your_move = your_move
 
-    def get_round_score(self):
-        score = 0
-
-        if self.your_move == "X" or self.your_move == "A":
-            if self.opponent_move == "X" or self.opponent_move == "A":
-                score = 3
-            elif self.opponent_move == "B" or self.opponent_move == "Y":
-                score = 0
-            elif self.opponent_move == "C" or self.opponent_move == "Z":
-                score = 6
-        elif self.your_move == "B" or self.your_move == "Y":
-            if self.opponent_move == "A" or self.opponent_move == "X":
-                score = 6
-            elif self.opponent_move == "B" or self.opponent_move == "Y":
-                score = 3
-            elif self.opponent_move == "C" or self.opponent_move == "Z":
-                score = 0
-        elif self.your_move == "C" or self.your_move == "Z":
-            if self.opponent_move == "A" or self.opponent_move == "X":
-                score = 0
-            elif self.opponent_move == "B" or self.opponent_move == "Y":
-                score = 6
-            elif self.opponent_move == "C" or self.opponent_move == "Z":
-                score = 3
-
-        return score
-
-    def get_total_score(self):
-        score = 0
-
-        shape_score = {
+        self.shape_score = {
             'A' : 1,
             'X' : 1,
             'B' : 2,
@@ -45,7 +14,33 @@ class Game:
             'Z' : 3
         }
 
-        return shape_score[self.your_move] + self.get_round_score()
+        self.round_score = {
+            'X' : {
+                "A" : 3,
+                "B" : 0,
+                "C" : 6,
+            },
+            'Y' : {
+                "A" : 6,
+                "B" : 3,
+                "C" : 0,
+            },
+            'Z' : {
+                "A" : 0,
+                "B" : 6,
+                "C" : 3,
+            },
+        }
+
+        
+    def get_round_score(self):
+        return self.round_score[self.your_move][self.opponent_move]
+
+    def get_shape_score(self):
+        return self.shape_score[self.your_move]
+
+    def get_total_score(self):
+        return self.shape_score[self.your_move] + self.get_round_score()
 
 class Solution:
     def part1(self, lines):
@@ -75,7 +70,40 @@ class Solution:
         return score
         
     def part2(self, lines):
-        return None
+        '''
+        X = Lose
+        Y = Draw
+        Z = Win
+        '''
+
+        score = 0
+
+        secret_strategy = {
+            'A' : {
+                "X" : "Z",
+                "Y" : "X",
+                "Z" : "Y",
+            },
+            'B' : {
+                "X" : "X",
+                "Y" : "Y",
+                "Z" : "Z",
+            },
+            'C' : {
+                "X" : "Y",
+                "Y" : "Z",
+                "Z" : "X",
+            },
+        }
+
+
+        for line in lines:
+            opponent, yourself = line.split(' ')
+            yourself = secret_strategy[opponent][yourself]
+            game = Game(opponent, yourself)
+            score += game.get_total_score()
+
+        return score
 
 def main(textfile):
     with open(textfile, 'r') as f:
