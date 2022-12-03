@@ -1,5 +1,4 @@
 import sys
-from itertools import islice
 
 
 class Solution:
