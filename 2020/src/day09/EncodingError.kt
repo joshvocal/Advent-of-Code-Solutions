@@ -4,7 +4,7 @@ import java.io.File
 import java.util.*
 
 fun main() {
-    val input = File("src/day9/input.txt").readLines()
+    val input = File("src/day09/input.txt").readLines()
     val numbers: ArrayList<Long> = input.map { it.toLong() } as ArrayList<Long>
 
     val weakness = solvePart1(numbers, 25)

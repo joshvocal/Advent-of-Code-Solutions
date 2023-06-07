@@ -4,7 +4,7 @@ import Utils.Companion.splitAtIndex
 import java.io.File
 
 fun main() {
-    val input = File("src/day4/input.txt").readLines()
+    val input = File("src/day04/input.txt").readLines()
         .joinToString("\n")
         .split("\n\n")
     val passports = parsePassports(input)

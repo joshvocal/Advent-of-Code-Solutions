@@ -3,7 +3,7 @@ package day08
 import java.io.File
 
 fun main() {
-    val input = File("src/day8/input.txt").readLines()
+    val input = File("src/day08/input.txt").readLines()
     val instructions: ArrayList<Instruction> = input.map { line -> Instruction.parse(line) } as ArrayList<Instruction>
 
     println(solvePart1(instructions).second)

@@ -3,7 +3,7 @@ package day06
 import java.io.File
 
 fun main() {
-    val input: List<String> = File("src/day6/input.txt").readLines()
+    val input: List<String> = File("src/day06/input.txt").readLines()
         .joinToString("\n")
         .split("\n\n")
 

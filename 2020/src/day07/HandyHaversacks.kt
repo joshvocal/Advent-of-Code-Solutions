@@ -6,7 +6,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 fun main() {
-    val input = File("src/day7/input.txt").readLines()
+    val input = File("src/day07/input.txt").readLines()
     val rules = parseRules(input)
 
     println(solvePart1(rules = rules, target = "shiny gold"))

@@ -3,7 +3,7 @@ package day01
 import java.io.File
 
 fun main() {
-    val expenseReport: List<Int> = File("src/day1/input.txt").readLines().map { it.toInt() }.toList()
+    val expenseReport: List<Int> = File("src/day01/input.txt").readLines().map { it.toInt() }.toList()
     val target = 2020
 
     val (a, b) = solvePart1(expenseReport, target)

@@ -3,7 +3,7 @@ package day02
 import java.io.File
 
 fun main() {
-    val input: List<String> = File("src/day2/input.txt").readLines()
+    val input: List<String> = File("src/day02/input.txt").readLines()
     val passwords = parsePasswords(input)
 
     println(solvePart1(passwords))

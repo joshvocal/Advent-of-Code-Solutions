@@ -3,7 +3,7 @@ package day03
 import java.io.File
 
 fun main() {
-    val input: List<String> = File("src/day3/input.txt").readLines()
+    val input: List<String> = File("src/day03/input.txt").readLines()
 
     println(solvePart1(input))
     println(solvePart2(input))
