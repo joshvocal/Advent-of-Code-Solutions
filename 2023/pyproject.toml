@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "2023"
+version = "0.1.0"
+description = ""
+authors = ["Josh Vocal <joshvocal@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+ruff = "^0.1.6"
+mypy = "^1.7.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+format_code = "ruff format ."
