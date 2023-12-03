@@ -46,7 +46,34 @@ class Solution:
         return game_id_sum
 
     def part2(self, lines: list[str]) -> int:
-        return 0
+        power_sum: int = 0
+
+        for line in lines:
+            _, sub_games = [x.strip() for x in line.split(":")]
+            games = [x.strip() for x in sub_games.split(";")]
+
+            numbers = {}
+            curr_blue = 0
+            curr_red = 0
+            curr_green = 0
+
+            for game in games:
+                # Use regex to find all the color names and the number count associated with them
+                for color, pattern in color_patterns.items():
+                    matches = re.findall(pattern, game)
+                    numbers[color] = sum([int(match) for match in matches])
+
+                    curr_blue = max(curr_blue, numbers.get("blue", 0))
+                    curr_red = max(curr_red, numbers.get("red", 0))
+                    curr_green = max(curr_green, numbers.get("green", 0))
+
+            power = curr_blue * curr_red * curr_green
+            power_sum += power
+
+            numbers = {}
+            curr_blue, curr_red, curr_green = 0, 0, 0
+
+        return power_sum
 
 
 def main(textfile):
